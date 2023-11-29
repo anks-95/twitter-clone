@@ -54,18 +54,20 @@ func main() {
 		return nil
 	})
 
-	// app.Post("/login", func(c *fiber.Ctx) error {
-	// 	if err := controllers.LoggedInUser(c, db); err != nil {
-	// 		fmt.Printf("User not logged in: %v\n", err)
-	// 		return c.Status(500).JSON(fiber.Map{"error": "Internal Server Error"})
-	// 	}
-	// 	return nil
-	// })
+	app.Post("/login", func(c *fiber.Ctx) error {
+		if err := controllers.LoggedInUser(c, db); err != nil {
+			fmt.Printf("User not logged in: %v\n", err)
+			return c.Status(500).JSON(fiber.Map{"error": "Internal Server Error"})
+		}
+		return nil
+	})
 
 	// Frontend routes
 	frontendRoutes := []string{
 		"/",
 		"/about",
+		"/signup",
+		"/login",
 	}
 
 	for _, route := range frontendRoutes {

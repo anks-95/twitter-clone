@@ -1,8 +1,9 @@
 // login.tsx
 
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import Validation from './LoginValidation';
+import axios from 'axios';
 
 
 
@@ -21,63 +22,36 @@ function Login(){
   const handleInput = (e: ChangeEvent<HTMLInputElement>) => {
     setValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
+  const navigate = useNavigate();
 
 
 
 
   const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setErrors(Validation(values));
-    // if(errors.name===""&&errors.email===""&&errors.password===""){
-    //   axios.post('http://localhost:3000/signup', values)
-    //   .then(res => {
-    //     navigate('/');
-    // })
-    // .catch(err => {
-    //     console.log(err.response); 
-    // });
-      
-    // }
-  };
+  e.preventDefault();
+  setErrors(Validation(values));
 
-  // const handleSubmit = async (e: FormEvent) => {
-  //   e.preventDefault();
-  //   const validationErrors = Validation(values);
+  // Check if there are no validation errors and both email and password are not empty
+  if (errors.email===" " && errors.password===" ") {
+    axios.post('http://localhost:3000/login', values)
+      .then(res => {
+        if (res.data.message === "success") {
+          // User found, navigate to home
+          navigate('/home');
+        } else  {
+          // User not found, show invalid credentials message
+          alert("Invalid credentials");
+          // You can also set an error state to display a message on the UI
+        } 
+      })
+      .catch(err => {
+        console.log(err.response);
+      });
+  }
+};
 
-  //   if (Object.values(validationErrors).every((error) => error === '')) {
-  //     try {
-  //       const user = await loginUser(values.email, values.password);
 
-  //       // Do something with the user (e.g., redirect to a dashboard)
-  //       console.log(user);
-  //     } catch (error) {
-  //       // Handle login error (e.g., display an error message)
-  //       console.error(error.message);
-  //     }
-  //   } else {
-  //     // Update state with validation errors
-  //     setErrors(validationErrors);
-  //   }
-
-    
-  // };
-
-  // Function to login user (calls the backend to verify credentials)
-  // const loginUser = async (email: string, password: string) => {
-  //   const response = await fetch('/api/login', {
-  //     method: 'POST',
-  //     headers: {
-  //       'Content-Type': 'application/json',
-  //     },
-  //     body: JSON.stringify({ email, password }),
-  //   });
-
-  //   if (!response.ok) {
-  //     throw new Error('Invalid credentials');
-  //   }
-
-  //   return await response.json();
-  // };
+ 
 
   return (
     <>
@@ -96,6 +70,7 @@ function Login(){
               placeholder="email"
               onChange={handleInput}
               name="email"
+              required 
             />
             {errors.email && <span className="text-danger"> {errors.email}</span>}
           </div>
@@ -110,6 +85,7 @@ function Login(){
               placeholder="password"
               onChange={handleInput}
               name="password"
+              required 
             />
             {errors.password && <span className="text-danger"> {errors.password}</span>}
           </div>
@@ -130,7 +106,6 @@ function Login(){
         </form>
       </div>
     </div>
-    <h1>testing code</h1>
     
     </>
   );
