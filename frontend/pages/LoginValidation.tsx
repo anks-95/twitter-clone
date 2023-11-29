@@ -22,7 +22,7 @@ function Validation(values: FormValues): ValidationErrors {
   } else if (!emailPattern.test(values.email)) {
     errors.email = "Email format is incorrect";
   }else{
-    errors.email=""
+    errors.email=" "
   }
 
 
@@ -31,7 +31,7 @@ function Validation(values: FormValues): ValidationErrors {
   } else if (!passwordPattern.test(values.password)) {
     errors.password = "Password format is incorrect";
   }else{
-    errors.password=""
+    errors.password=" "
   }
 
 
